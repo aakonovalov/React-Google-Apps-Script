@@ -14,6 +14,7 @@
     .card img { width: 100%; height: 230px; display: block; object-fit: contain; background: #e8e8e8; }
     .index { margin-top: 6px; font-size: 16px; font-weight: 700; }
     .name { margin-top: 3px; font-size: 9px; color: #555; overflow-wrap: anywhere; }
+    .preview-state { margin-top: 2px; font-size: 9px; color: #777; }
     .error { white-space: pre-wrap; color: #a00; font-size: 16px; }
   </style>
 </head>
@@ -55,10 +56,14 @@
           const card = document.createElement('div');
           card.className = 'card';
           const img = document.createElement('img');
-          img.alt = item.name || '';
-          img.src = item.preview || '';
+          img.alt = '';
+          img.referrerPolicy = 'no-referrer';
+          const previewUrl = item.preview || '';
+          img.src = previewUrl
+            ? `https://images.weserv.nl/?url=${encodeURIComponent(previewUrl)}&output=jpg&q=85`
+            : '';
           card.appendChild(img);
-          card.insertAdjacentHTML('beforeend', `<div class="index">№ ${offset + i + 1}</div><div class="name">${item.name || ''}</div>`);
+          card.insertAdjacentHTML('beforeend', `<div class="index">№ ${offset + i + 1}</div><div class="name">${item.name || ''}</div><div class="preview-state">preview: ${previewUrl ? 'есть' : 'нет'}</div>`);
           grid.appendChild(card);
         });
       } catch (error) {
