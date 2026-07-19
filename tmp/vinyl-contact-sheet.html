@@ -26,7 +26,19 @@
     // Временная страница для визуального анализа фотографий из публичной папки Яндекс Диска.
     (async () => {
       const PUBLIC_KEY = 'https://disk.yandex.ru/d/vZHyxEHgA0JNVQ';
-      const params = new URLSearchParams(location.hash.replace(/^#/, ''));
+
+      // htmlpreview.github.io передаёт адрес исходного HTML после знака вопроса.
+      // Поэтому параметры можно читать либо из hash, либо из query исходного raw-файла.
+      let params = new URLSearchParams(location.hash.replace(/^#/, ''));
+      if (!params.has('folder') && location.search.length > 1) {
+        try {
+          const sourceUrl = new URL(location.search.slice(1));
+          params = sourceUrl.searchParams;
+        } catch (_) {
+          // Оставляем пустые параметры и используем значения по умолчанию.
+        }
+      }
+
       const folderNumber = params.get('folder') || '1';
       const offset = Number(params.get('offset') || '0');
       const limit = Math.min(Number(params.get('limit') || '20'), 30);
